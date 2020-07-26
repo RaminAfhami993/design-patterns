@@ -1,23 +1,23 @@
-let publisherSubscriber = {};
+var publisherSubscriber  = {};
 
 (function(container) {
-    let id = 0;
+    var id = 0;
 
-    container.subscribe = function(topic, func) {
+    container.subscribe = function(topic, f) {
         if (!(topic in container)) {
             container[topic] = [];
         };
 
         container[topic].push({
             id: ++id,
-            callback: func
+            callback: f 
         });
 
         return id;
     };
 
     container.unsubscribe = function(topic, id) {
-        publisherSubscriber[topic] = publisherSubscriber[topic].filter(x => x.id != id);
+        container[topic] = container[topic].filter(x => x.id != id);
     };
 
     container.publish = function(topic, data) {
@@ -25,27 +25,31 @@ let publisherSubscriber = {};
             element.callback(data);
         });
     };
-
-
 })(publisherSubscriber);
 
-const id1 = publisherSubscriber.subscribe('click', function(data) {
-    console.log("1 ======> ", data);
+
+var id1 = publisherSubscriber.subscribe('click', function(data) {
+    console.log('1 ===> ', data);
 });
 
-const id2 = publisherSubscriber.subscribe('hover', function(data) {
-    console.log("2 ======> ", data);
+var id2 = publisherSubscriber.subscribe('hover', function(data) {
+    console.log('2 ===> ', data);
 });
 
-const id3 = publisherSubscriber.subscribe('click', function(data) {
-    console.log("3 ======> ", data);
+var id3 = publisherSubscriber.subscribe('click', function(data) {
+    console.log('3 ===> ', data);
 });
 
-publisherSubscriber.publish("click", {data: 1});
+publisherSubscriber.publish('click', {test: "sample"});
+console.log(1);
 
-publisherSubscriber.unsubscribe("click", id1);
+publisherSubscriber.publish('hover', {test: "sample"});
+console.log(2);
 
-publisherSubscriber.publish("click", {data: 1});
+publisherSubscriber.unsubscribe('click', id1)
 
-console.log(id1, id2, id3);
+publisherSubscriber.publish('click', {test: "sample"});
+console.log(2);
 
+publisherSubscriber.publish('hover', {test: "sample"});
+console.log(3);
